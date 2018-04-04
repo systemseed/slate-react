@@ -1,19 +1,12 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom'), require('is-in-browser'), require('slate-prop-types'), require('react-immutable-proptypes'), require('slate-dev-logger'), require('slate'), require('get-window'), require('selection-is-backward'), require('slate-base64-serializer'), require('slate-plain-serializer')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom', 'is-in-browser', 'slate-prop-types', 'react-immutable-proptypes', 'slate-dev-logger', 'slate', 'get-window', 'selection-is-backward', 'slate-base64-serializer', 'slate-plain-serializer'], factory) :
-	(factory((global.SkorzhSlateReact = {}),global.React,global.ReactDOM,global.browser,global.SlateTypes,global.ImmutableTypes,global.logger,global.Slate,global.getWindow,global.isBackward,global.Base64,global.Plain));
-}(this, (function (exports,React,reactDom,browser,SlateTypes,ImmutableTypes,logger,slate,getWindow,isBackward,Base64,Plain) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom'), require('slate'), require('immutable')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom', 'slate', 'immutable'], factory) :
+	(factory((global.SlateReact = {}),global.React,global.ReactDOM,global.Slate,global.Immutable));
+}(this, (function (exports,React,reactDom,slate,immutable) { 'use strict';
 
 React = React && React.hasOwnProperty('default') ? React['default'] : React;
 var reactDom__default = 'default' in reactDom ? reactDom['default'] : reactDom;
-browser = browser && browser.hasOwnProperty('default') ? browser['default'] : browser;
-SlateTypes = SlateTypes && SlateTypes.hasOwnProperty('default') ? SlateTypes['default'] : SlateTypes;
-ImmutableTypes = ImmutableTypes && ImmutableTypes.hasOwnProperty('default') ? ImmutableTypes['default'] : ImmutableTypes;
-logger = logger && logger.hasOwnProperty('default') ? logger['default'] : logger;
-getWindow = getWindow && getWindow.hasOwnProperty('default') ? getWindow['default'] : getWindow;
-isBackward = isBackward && isBackward.hasOwnProperty('default') ? isBackward['default'] : isBackward;
-Base64 = Base64 && Base64.hasOwnProperty('default') ? Base64['default'] : Base64;
-Plain = Plain && Plain.hasOwnProperty('default') ? Plain['default'] : Plain;
+var immutable__default = 'default' in immutable ? immutable['default'] : immutable;
 
 var global$1 = typeof global !== "undefined" ? global :
             typeof self !== "undefined" ? self :
@@ -154,7 +147,7 @@ Item.prototype.run = function () {
 };
 var title = 'browser';
 var platform = 'browser';
-var browser$1 = true;
+var browser = true;
 var env = {};
 var argv = [];
 var version = ''; // empty string to avoid regexp issues
@@ -219,7 +212,7 @@ function uptime() {
 var process = {
   nextTick: nextTick,
   title: title,
-  browser: browser$1,
+  browser: browser,
   env: env,
   argv: argv,
   version: version,
@@ -620,7 +613,7 @@ var debug_6 = debug.names;
 var debug_7 = debug.skips;
 var debug_8 = debug.formatters;
 
-var browser$2 = createCommonjsModule(function (module, exports) {
+var browser$1 = createCommonjsModule(function (module, exports) {
 /**
  * This is the web browser implementation of `debug()`.
  *
@@ -808,21 +801,19 @@ function localstorage() {
 }
 });
 
-var browser_1 = browser$2.log;
-var browser_2 = browser$2.formatArgs;
-var browser_3 = browser$2.save;
-var browser_4 = browser$2.load;
-var browser_5 = browser$2.useColors;
-var browser_6 = browser$2.storage;
-var browser_7 = browser$2.colors;
+var browser_1 = browser$1.log;
+var browser_2 = browser$1.formatArgs;
+var browser_3 = browser$1.save;
+var browser_4 = browser$1.load;
+var browser_5 = browser$1.useColors;
+var browser_6 = browser$1.storage;
+var browser_7 = browser$1.colors;
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * 
  */
@@ -855,11 +846,9 @@ var emptyFunction_1 = emptyFunction;
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  */
 
@@ -917,56 +906,142 @@ var invariant_1 = invariant;
 var warning = emptyFunction_1;
 
 {
-  (function () {
-    var printWarning = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
       }
 
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  })();
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
 }
 
 var warning_1 = warning;
 
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
 /**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2013-present, Facebook, Inc.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
@@ -1002,7 +1077,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
         try {
           // This is intentionally an invariant that gets caught. It's the same
           // behavior as without this statement except with a better message.
-          invariant$2(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
+          invariant$2(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
           error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$2);
         } catch (ex) {
           error = ex;
@@ -1118,7 +1193,8 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
     objectOf: createObjectOfTypeChecker,
     oneOf: createEnumTypeChecker,
     oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
   };
 
   /**
@@ -1333,7 +1409,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       if (typeof checker !== 'function') {
         warning_1(
           false,
-          'Invalid argument supplid to oneOfType. Expected an array of check functions, but ' +
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
           'received %s at index %s.',
           getPostfixForTypeWarning(checker),
           i
@@ -1384,6 +1460,36 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       }
       return null;
     }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from
+      // props.
+      var allKeys = objectAssign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
     return createChainableTypeChecker(validate);
   }
 
@@ -1521,12 +1627,10 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
 
 var propTypes = createCommonjsModule(function (module) {
 /**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2013-present, Facebook, Inc.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 {
@@ -1675,14 +1779,17 @@ var Portal = function (_React$Component) {
 
       var isUnmounted = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-      var resetPortalState = function resetPortalState() {
+      var resetPortalState = function resetPortalState(overrideIsUnmounted) {
         if (_this2.node) {
           _reactDom2.default.unmountComponentAtNode(_this2.node);
           document.body.removeChild(_this2.node);
         }
         _this2.portal = null;
         _this2.node = null;
-        if (isUnmounted !== true) {
+
+        var finalIsUnmounted = overrideIsUnmounted === undefined ? isUnmounted : overrideIsUnmounted;
+
+        if (finalIsUnmounted !== true) {
           _this2.setState({ active: false });
         }
       };
@@ -1774,558 +1881,457 @@ module.exports = exports['default'];
 var Portal = unwrapExports(portal);
 
 /**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Create a prop type checker for Slate objects with `name` and `validate`.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * @param {String} name
+ * @param {Function} validate
+ * @return {Function}
  */
 
-var ReactPropTypesSecret$3 = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+function create(name, validate) {
+  function check(isRequired, props, propName, componentName, location) {
+    var value = props[propName];
+    if (value == null && !isRequired) return null;
+    if (value == null && isRequired) return new Error('The ' + location + ' `' + propName + '` is marked as required in `' + componentName + '`, but it was not supplied.');
+    if (validate(value)) return null;
+    return new Error('Invalid ' + location + ' `' + propName + '` supplied to `' + componentName + '`, expected a Slate `' + name + '` but received: ' + value);
+  }
 
-var ReactPropTypesSecret_1$2 = ReactPropTypesSecret$3;
+  function propType() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-{
-  var invariant$3 = invariant_1;
-  var warning$2 = warning_1;
-  var ReactPropTypesSecret$4 = ReactPropTypesSecret_1$2;
-  var loggedTypeFailures$1 = {};
+    return check.apply(undefined, [false].concat(args));
+  }
+
+  propType.isRequired = function () {
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return check.apply(undefined, [true].concat(args));
+  };
+
+  return propType;
 }
 
 /**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
+ * Prop type checkers.
  *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
+ * @type {Object}
  */
-function checkPropTypes$2(typeSpecs, values, location, componentName, getStack) {
-  {
-    for (var typeSpecName in typeSpecs) {
-      if (typeSpecs.hasOwnProperty(typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          invariant$3(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$4);
-        } catch (ex) {
-          error = ex;
-        }
-        warning$2(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
-        if (error instanceof Error && !(error.message in loggedTypeFailures$1)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures$1[error.message] = true;
 
-          var stack = getStack ? getStack() : '';
-
-          warning$2(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
-        }
-      }
-    }
-  }
-}
-
-var checkPropTypes_1$2 = checkPropTypes$2;
-
-var factoryWithTypeCheckers$2 = function(isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-
-  /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */
-
-  var ANONYMOUS = '<<anonymous>>';
-
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-  var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
-
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker
-  };
+var Types$1 = {
+  block: create('Block', function (v) {
+    return slate.Block.isBlock(v);
+  }),
+  blocks: create('List<Block>', function (v) {
+    return slate.Block.isBlockList(v);
+  }),
+  change: create('Change', function (v) {
+    return slate.Change.isChange(v);
+  }),
+  character: create('Character', function (v) {
+    return slate.Character.isCharacter(v);
+  }),
+  characters: create('List<Character>', function (v) {
+    return slate.Character.isCharacterList(v);
+  }),
+  data: create('Data', function (v) {
+    return slate.Data.isData(v);
+  }),
+  document: create('Document', function (v) {
+    return slate.Document.isDocument(v);
+  }),
+  history: create('History', function (v) {
+    return slate.History.isHistory(v);
+  }),
+  inline: create('Inline', function (v) {
+    return slate.Inline.isInline(v);
+  }),
+  inlines: create('Inline', function (v) {
+    return slate.Inline.isInlineList(v);
+  }),
+  leaf: create('Leaf', function (v) {
+    return slate.Leaf.isLeaf(v);
+  }),
+  leaves: create('List<Leaf>', function (v) {
+    return slate.Leaf.isLeafList(v);
+  }),
+  mark: create('Mark', function (v) {
+    return slate.Mark.isMark(v);
+  }),
+  marks: create('Set<Mark>', function (v) {
+    return slate.Mark.isMarkSet(v);
+  }),
+  node: create('Node', function (v) {
+    return slate.Node.isNode(v);
+  }),
+  nodes: create('List<Node>', function (v) {
+    return slate.Node.isNodeList(v);
+  }),
+  range: create('Range', function (v) {
+    return slate.Range.isRange(v);
+  }),
+  ranges: create('List<Range>', function (v) {
+    return slate.Range.isRangeList(v);
+  }),
+  schema: create('Schema', function (v) {
+    return slate.Schema.isSchema(v);
+  }),
+  stack: create('Stack', function (v) {
+    return slate.Stack.isStack(v);
+  }),
+  value: create('Value', function (v) {
+    return slate.Value.isValue(v);
+  }),
+  text: create('Text', function (v) {
+    return slate.Text.isText(v);
+  }),
+  texts: create('List<Text>', function (v) {
+    return slate.Text.isTextList(v);
+  })
 
   /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   * Export.
+   *
+   * @type {Object}
    */
-  /*eslint-disable no-self-compare*/
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
 
-  /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  }
-  // Make `instanceof Error` still work for returned errors.
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== ReactPropTypesSecret_1$2) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          invariant_1(
-            false,
-            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-            'Use `PropTypes.checkPropTypes()` to call them. ' +
-            'Read more at http://fb.me/use-check-prop-types'
-          );
-        } else if ("development" !== 'production' && typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-          if (
-            !manualPropTypeCallCache[cacheKey] &&
-            // Avoid spamming the console because they are often not actionable except for lib authors
-            manualPropTypeWarningCount < 3
-          ) {
-            warning_1(
-              false,
-              'You are manually calling a React.PropTypes validation ' +
-              'function for the `%s` prop on `%s`. This is deprecated ' +
-              'and will throw in the standalone `prop-types` package. ' +
-              'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-              propFullName,
-              componentName
-            );
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunction_1.thatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-      var propValue = props[propName];
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1$2);
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-      warning_1(false, 'Invalid argument supplied to oneOf, expected an instance of array.');
-      return emptyFunction_1.thatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues);
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-      for (var key in propValue) {
-        if (propValue.hasOwnProperty(key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$2);
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-      warning_1(false, 'Invalid argument supplied to oneOfType, expected an instance of array.');
-      return emptyFunction_1.thatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1$2) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$2);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-      case 'boolean':
-        return !propValue;
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    }
-
-    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    }
-
-    // Fallback for non-spec compliant Symbols which are polyfilled.
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Equivalent of `typeof` but with special handling for array and regexp.
-  function getPropType(propValue) {
-    var propType = typeof propValue;
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-    return propType;
-  }
-
-  // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-  function getPreciseType(propValue) {
-    var propType = getPropType(propValue);
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-    return propType;
-  }
-
-  // Returns class name of the object, if any.
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes_1$2;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
 };
 
-var propTypes$2 = createCommonjsModule(function (module) {
+var global$1$1 = typeof global$1 !== "undefined" ? global$1 :
+            typeof self !== "undefined" ? self :
+            typeof window !== "undefined" ? window : {};
+
+// shim for using process in browser
+// based off https://github.com/defunctzombie/node-process/blob/master/browser.js
+
+function defaultSetTimout$1() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout$1 () {
+    throw new Error('clearTimeout has not been defined');
+}
+var cachedSetTimeout$1 = defaultSetTimout$1;
+var cachedClearTimeout$1 = defaultClearTimeout$1;
+if (typeof global$1$1.setTimeout === 'function') {
+    cachedSetTimeout$1 = setTimeout;
+}
+if (typeof global$1$1.clearTimeout === 'function') {
+    cachedClearTimeout$1 = clearTimeout;
+}
+
+function runTimeout$1(fun) {
+    if (cachedSetTimeout$1 === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout$1 === defaultSetTimout$1 || !cachedSetTimeout$1) && setTimeout) {
+        cachedSetTimeout$1 = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout$1(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout$1.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout$1.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout$1(marker) {
+    if (cachedClearTimeout$1 === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout$1 === defaultClearTimeout$1 || !cachedClearTimeout$1) && clearTimeout) {
+        cachedClearTimeout$1 = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout$1(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout$1.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout$1.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue$1 = [];
+var draining$1 = false;
+var currentQueue$1;
+var queueIndex$1 = -1;
+
+function cleanUpNextTick$1() {
+    if (!draining$1 || !currentQueue$1) {
+        return;
+    }
+    draining$1 = false;
+    if (currentQueue$1.length) {
+        queue$1 = currentQueue$1.concat(queue$1);
+    } else {
+        queueIndex$1 = -1;
+    }
+    if (queue$1.length) {
+        drainQueue$1();
+    }
+}
+
+function drainQueue$1() {
+    if (draining$1) {
+        return;
+    }
+    var timeout = runTimeout$1(cleanUpNextTick$1);
+    draining$1 = true;
+
+    var len = queue$1.length;
+    while(len) {
+        currentQueue$1 = queue$1;
+        queue$1 = [];
+        while (++queueIndex$1 < len) {
+            if (currentQueue$1) {
+                currentQueue$1[queueIndex$1].run();
+            }
+        }
+        queueIndex$1 = -1;
+        len = queue$1.length;
+    }
+    currentQueue$1 = null;
+    draining$1 = false;
+    runClearTimeout$1(timeout);
+}
+function nextTick$1(fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue$1.push(new Item$1(fun, args));
+    if (queue$1.length === 1 && !draining$1) {
+        runTimeout$1(drainQueue$1);
+    }
+}
+// v8 likes predictible objects
+function Item$1(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item$1.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+var title$1 = 'browser';
+var platform$1 = 'browser';
+var browser$2 = true;
+var env$1 = {};
+var argv$1 = [];
+var version$1 = ''; // empty string to avoid regexp issues
+var versions$1 = {};
+var release$1 = {};
+var config$1 = {};
+
+function noop$1() {}
+
+var on$1 = noop$1;
+var addListener$1 = noop$1;
+var once$1 = noop$1;
+var off$1 = noop$1;
+var removeListener$1 = noop$1;
+var removeAllListeners$1 = noop$1;
+var emit$1 = noop$1;
+
+function binding$1(name) {
+    throw new Error('process.binding is not supported');
+}
+
+function cwd$1 () { return '/' }
+function chdir$1 (dir) {
+    throw new Error('process.chdir is not supported');
+}
+function umask$1() { return 0; }
+
+// from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
+var performance$1 = global$1$1.performance || {};
+var performanceNow$1 =
+  performance$1.now        ||
+  performance$1.mozNow     ||
+  performance$1.msNow      ||
+  performance$1.oNow       ||
+  performance$1.webkitNow  ||
+  function(){ return (new Date()).getTime() };
+
+// generate timestamp or delta
+// see http://nodejs.org/api/process.html#process_process_hrtime
+function hrtime$1(previousTimestamp){
+  var clocktime = performanceNow$1.call(performance$1)*1e-3;
+  var seconds = Math.floor(clocktime);
+  var nanoseconds = Math.floor((clocktime%1)*1e9);
+  if (previousTimestamp) {
+    seconds = seconds - previousTimestamp[0];
+    nanoseconds = nanoseconds - previousTimestamp[1];
+    if (nanoseconds<0) {
+      seconds--;
+      nanoseconds += 1e9;
+    }
+  }
+  return [seconds,nanoseconds]
+}
+
+var startTime$1 = new Date();
+function uptime$1() {
+  var currentTime = new Date();
+  var dif = currentTime - startTime$1;
+  return dif / 1000;
+}
+
+var process$1 = {
+  nextTick: nextTick$1,
+  title: title$1,
+  browser: browser$2,
+  env: env$1,
+  argv: argv$1,
+  version: version$1,
+  versions: versions$1,
+  on: on$1,
+  addListener: addListener$1,
+  once: once$1,
+  off: off$1,
+  removeListener: removeListener$1,
+  removeAllListeners: removeAllListeners$1,
+  emit: emit$1,
+  binding: binding$1,
+  cwd: cwd$1,
+  chdir: chdir$1,
+  umask: umask$1,
+  hrtime: hrtime$1,
+  platform: platform$1,
+  release: release$1,
+  config: config$1,
+  uptime: uptime$1
+};
+
+/* eslint-disable no-console */
+
 /**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Is in development?
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * @type {Boolean}
  */
 
-{
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
+var IS_DEV = typeof process$1 !== 'undefined' && process$1.env && "development" !== 'production';
 
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
+/**
+ * Has console?
+ *
+ * @type {Boolean}
+ */
 
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = factoryWithTypeCheckers$2(isValidElement, throwOnDirectAccess);
+var HAS_CONSOLE = typeof console != 'undefined' && typeof console.log == 'function' && typeof console.warn == 'function' && typeof console.error == 'function';
+
+/**
+ * Log a `message` at `level`.
+ *
+ * @param {String} level
+ * @param {String} message
+ * @param {Any} ...args
+ */
+
+function log(level, message) {
+  if (!IS_DEV) {
+    return;
+  }
+
+  if (HAS_CONSOLE) {
+    var _console;
+
+    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      args[_key - 2] = arguments[_key];
+    }
+
+    (_console = console)[level].apply(_console, [message].concat(args));
+  }
 }
-});
+
+/**
+ * Log an error `message`.
+ *
+ * @param {String} message
+ * @param {Any} ...args
+ */
+
+function error(message) {
+  if (HAS_CONSOLE) {
+    var _console2;
+
+    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+      args[_key2 - 1] = arguments[_key2];
+    }
+
+    (_console2 = console).error.apply(_console2, [message].concat(args));
+  }
+}
+
+/**
+ * Log a warning `message` in development only.
+ *
+ * @param {String} message
+ * @param {Any} ...args
+ */
+
+function warn(message) {
+  for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+    args[_key3 - 1] = arguments[_key3];
+  }
+
+  log.apply(undefined, ['warn', 'Warning: ' + message].concat(args));
+}
+
+/**
+ * Log a deprecation warning `message`, with helpful `version` number in
+ * development only.
+ *
+ * @param {String} version
+ * @param {String} message
+ * @param {Any} ...args
+ */
+
+function deprecate(version$$1, message) {
+  for (var _len4 = arguments.length, args = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+    args[_key4 - 2] = arguments[_key4];
+  }
+
+  log.apply(undefined, ['warn', 'Deprecation (' + version$$1 + '): ' + message].concat(args));
+}
+
+/**
+ * Export.
+ *
+ * @type {Function}
+ */
+
+var index = {
+  deprecate: deprecate,
+  error: error,
+  warn: warn
+};
 
 /**
  * Event handlers used by Slate plugins.
@@ -2487,6 +2493,331 @@ var toConsumableArray = function (arr) {
 
 var PLUGIN_PROPS = [].concat(toConsumableArray(EVENT_HANDLERS), ['decorateNode', 'onChange', 'renderMark', 'renderNode', 'renderPlaceholder', 'renderPortal', 'schema', 'validateNode']);
 
+var atob = self.atob.bind(self);
+var btoa = self.btoa.bind(self);
+
+/**
+ * Encode a JSON `object` as base-64 `string`.
+ *
+ * @param {Object} object
+ * @return {String}
+ */
+
+function encode(object) {
+  var string = JSON.stringify(object);
+  var encoded = btoa(encodeURIComponent(string));
+  return encoded;
+}
+
+/**
+ * Decode a base-64 `string` to a JSON `object`.
+ *
+ * @param {String} string
+ * @return {Object}
+ */
+
+function decode(string) {
+  var decoded = decodeURIComponent(atob(string));
+  var object = JSON.parse(decoded);
+  return object;
+}
+
+/**
+ * Deserialize a Value `string`.
+ *
+ * @param {String} string
+ * @return {Value}
+ */
+
+function deserialize(string, options) {
+  var raw = decode(string);
+  var value = slate.Value.fromJSON(raw, options);
+  return value;
+}
+
+/**
+ * Deserialize a Node `string`.
+ *
+ * @param {String} string
+ * @return {Node}
+ */
+
+function deserializeNode(string, options) {
+  var raw = decode(string);
+  var node = slate.Node.fromJSON(raw, options);
+  return node;
+}
+
+/**
+ * Serialize a `value`.
+ *
+ * @param {Value} value
+ * @return {String}
+ */
+
+function serialize(value, options) {
+  var raw = value.toJSON(options);
+  var encoded = encode(raw);
+  return encoded;
+}
+
+/**
+ * Serialize a `node`.
+ *
+ * @param {Node} node
+ * @return {String}
+ */
+
+function serializeNode(node, options) {
+  var raw = node.toJSON(options);
+  var encoded = encode(raw);
+  return encoded;
+}
+
+/**
+ * Export.
+ *
+ * @type {Object}
+ */
+
+var index$1 = {
+  deserialize: deserialize,
+  deserializeNode: deserializeNode,
+  serialize: serialize,
+  serializeNode: serializeNode
+};
+
+var _extends$1 = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+/**
+ * Deserialize a plain text `string` to a Slate value.
+ *
+ * @param {String} string
+ * @param {Object} options
+ *   @property {Boolean} toJSON
+ *   @property {String|Object|Block} defaultBlock
+ *   @property {Array|Set} defaultMarks
+ * @return {Value}
+ */
+
+function deserialize$1(string) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _options$defaultBlock = options.defaultBlock,
+      defaultBlock = _options$defaultBlock === undefined ? 'line' : _options$defaultBlock,
+      _options$defaultMarks = options.defaultMarks,
+      defaultMarks = _options$defaultMarks === undefined ? [] : _options$defaultMarks,
+      _options$toJSON = options.toJSON,
+      toJSON = _options$toJSON === undefined ? false : _options$toJSON;
+
+
+  if (immutable.Set.isSet(defaultMarks)) {
+    defaultMarks = defaultMarks.toArray();
+  }
+
+  defaultBlock = slate.Node.createProperties(defaultBlock);
+  defaultMarks = defaultMarks.map(slate.Mark.createProperties);
+
+  var json = {
+    object: 'value',
+    document: {
+      object: 'document',
+      data: {},
+      nodes: string.split('\n').map(function (line) {
+        return _extends$1({}, defaultBlock, {
+          object: 'block',
+          isVoid: false,
+          data: {},
+          nodes: [{
+            object: 'text',
+            leaves: [{
+              object: 'leaf',
+              text: line,
+              marks: defaultMarks
+            }]
+          }]
+        });
+      })
+    }
+  };
+
+  var ret = toJSON ? json : slate.Value.fromJSON(json);
+  return ret;
+}
+
+/**
+ * Serialize a Slate `value` to a plain text string.
+ *
+ * @param {Value} value
+ * @return {String}
+ */
+
+function serialize$1(value) {
+  return serializeNode$1(value.document);
+}
+
+/**
+ * Serialize a `node` to plain text.
+ *
+ * @param {Node} node
+ * @return {String}
+ */
+
+function serializeNode$1(node) {
+  if (node.object == 'document' || node.object == 'block' && slate.Block.isBlockList(node.nodes)) {
+    return node.nodes.map(serializeNode$1).join('\n');
+  } else {
+    return node.text;
+  }
+}
+
+/**
+ * Export.
+ *
+ * @type {Object}
+ */
+
+var index$2 = {
+  deserialize: deserialize$1,
+  serialize: serialize$1
+};
+
+/**
+ * Module exports.
+ */
+
+var getDocument_1 = getDocument;
+
+// defined by w3c
+var DOCUMENT_NODE = 9;
+
+/**
+ * Returns `true` if `w` is a Document object, or `false` otherwise.
+ *
+ * @param {?} d - Document object, maybe
+ * @return {Boolean}
+ * @private
+ */
+
+function isDocument (d) {
+  return d && d.nodeType === DOCUMENT_NODE;
+}
+
+/**
+ * Returns the `document` object associated with the given `node`, which may be
+ * a DOM element, the Window object, a Selection, a Range. Basically any DOM
+ * object that references the Document in some way, this function will find it.
+ *
+ * @param {Mixed} node - DOM node, selection, or range in which to find the `document` object
+ * @return {Document} the `document` object associated with `node`
+ * @public
+ */
+
+function getDocument(node) {
+  if (isDocument(node)) {
+    return node;
+
+  } else if (isDocument(node.ownerDocument)) {
+    return node.ownerDocument;
+
+  } else if (isDocument(node.document)) {
+    return node.document;
+
+  } else if (node.parentNode) {
+    return getDocument(node.parentNode);
+
+  // Range support
+  } else if (node.commonAncestorContainer) {
+    return getDocument(node.commonAncestorContainer);
+
+  } else if (node.startContainer) {
+    return getDocument(node.startContainer);
+
+  // Selection support
+  } else if (node.anchorNode) {
+    return getDocument(node.anchorNode);
+  }
+}
+
+// this is a browser-only module. There is a non-browser equivalent in the same
+// directory. This is done using a `package.json` browser field.
+// old-IE fallback logic: http://stackoverflow.com/a/10260692
+var needsIeFallback_br =  !!document.attachEvent && window !== document.parentWindow;
+
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Module exports.
+ */
+
+var getWindow_1 = getWindow;
+
+
+
+/**
+ * Returns `true` if `w` is a Window object, or `false` otherwise.
+ *
+ * @param {Mixed} w - Window object, maybe
+ * @return {Boolean}
+ * @private
+ */
+
+function isWindow (w) {
+  return w && w.window === w;
+}
+
+/**
+ * Returns the `window` object associated with the given `node`, which may be
+ * a DOM element, the Window object, a Selection, a Range. Basically any DOM
+ * object that references the Window in some way, this function will find it.
+ *
+ * @param {Mixed} node - DOM node, selection, or range in which to find the `window` object
+ * @return {Window} the `window` object associated with `node`
+ * @public
+ */
+
+function getWindow(node) {
+  if (isWindow(node)) {
+    return node;
+  }
+
+  var doc = getDocument_1(node);
+
+  if (needsIeFallback_br) {
+    // In IE 6-8, only the variable 'window' can be used to connect events (others
+    // may be only copies).
+    doc.parentWindow.execScript('document._parentWindow = window;', 'Javascript');
+    var win = doc._parentWindow;
+    // to prevent memory leak, unset it after use
+    // another possibility is to add an onUnload handler,
+    // (which seems overkill to @liucougar)
+    doc._parentWindow = null;
+    return win;
+  } else {
+    // standards-compliant and newer IE
+    return doc.defaultView || doc.parentWindow;
+  }
+}
+
+var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var isBrowser = (typeof window === "undefined" ? "undefined" : _typeof$1(window)) === "object" && (typeof document === "undefined" ? "undefined" : _typeof$1(document)) === 'object' && document.nodeType === 9;
+
 /**
  * Browser matching rules.
  *
@@ -2526,7 +2857,7 @@ var OS = void 0;
  * Run the matchers when in browser.
  */
 
-if (browser) {
+if (isBrowser) {
   var userAgent = window.navigator.userAgent;
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -2842,6 +3173,7 @@ function compareHotkey(object, event) {
       actual = event[key];
     }
 
+    if (actual == null && expected == false) continue;
     if (actual != expected) return false;
   }
 
@@ -3112,7 +3444,7 @@ var _Symbol = Symbol$1;
 var objectProto = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
+var hasOwnProperty$1 = objectProto.hasOwnProperty;
 
 /**
  * Used to resolve the
@@ -3132,7 +3464,7 @@ var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
  * @returns {string} Returns the raw `toStringTag`.
  */
 function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
+  var isOwn = hasOwnProperty$1.call(value, symToStringTag),
       tag = value[symToStringTag];
 
   try {
@@ -3428,9 +3760,11 @@ function debounce(func, wait, options) {
   function remainingWait(time) {
     var timeSinceLastCall = time - lastCallTime,
         timeSinceLastInvoke = time - lastInvokeTime,
-        result = wait - timeSinceLastCall;
+        timeWaiting = wait - timeSinceLastCall;
 
-    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+    return maxing
+      ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
   }
 
   function shouldInvoke(time) {
@@ -3574,6 +3908,247 @@ function throttle(func, wait, options) {
 
 var throttle_1 = throttle;
 
+var ANONYMOUS = "<<anonymous>>";
+
+var ImmutablePropTypes = {
+  listOf: createListOfTypeChecker,
+  mapOf: createMapOfTypeChecker,
+  orderedMapOf: createOrderedMapOfTypeChecker,
+  setOf: createSetOfTypeChecker,
+  orderedSetOf: createOrderedSetOfTypeChecker,
+  stackOf: createStackOfTypeChecker,
+  iterableOf: createIterableOfTypeChecker,
+  recordOf: createRecordOfTypeChecker,
+  shape: createShapeChecker,
+  contains: createShapeChecker,
+  mapContains: createMapContainsChecker,
+  // Primitive Types
+  list: createImmutableTypeChecker("List", immutable__default.List.isList),
+  map: createImmutableTypeChecker("Map", immutable__default.Map.isMap),
+  orderedMap: createImmutableTypeChecker("OrderedMap", immutable__default.OrderedMap.isOrderedMap),
+  set: createImmutableTypeChecker("Set", immutable__default.Set.isSet),
+  orderedSet: createImmutableTypeChecker("OrderedSet", immutable__default.OrderedSet.isOrderedSet),
+  stack: createImmutableTypeChecker("Stack", immutable__default.Stack.isStack),
+  seq: createImmutableTypeChecker("Seq", immutable__default.Seq.isSeq),
+  record: createImmutableTypeChecker("Record", function (isRecord) {
+    return isRecord instanceof immutable__default.Record;
+  }),
+  iterable: createImmutableTypeChecker("Iterable", immutable__default.Iterable.isIterable)
+};
+
+function getPropType(propValue) {
+  var propType = typeof propValue;
+  if (Array.isArray(propValue)) {
+    return "array";
+  }
+  if (propValue instanceof RegExp) {
+    // Old webkits (at least until Android 4.0) return 'function' rather than
+    // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+    // passes PropTypes.object.
+    return "object";
+  }
+  if (propValue instanceof immutable__default.Iterable) {
+    return "Immutable." + propValue.toSource().split(" ")[0];
+  }
+  return propType;
+}
+
+function createChainableTypeChecker(validate) {
+  function checkType(isRequired, props, propName, componentName, location, propFullName) {
+    for (var _len = arguments.length, rest = Array(_len > 6 ? _len - 6 : 0), _key = 6; _key < _len; _key++) {
+      rest[_key - 6] = arguments[_key];
+    }
+
+    propFullName = propFullName || propName;
+    componentName = componentName || ANONYMOUS;
+    if (props[propName] == null) {
+      var locationName = location;
+      if (isRequired) {
+        return new Error("Required " + locationName + " `" + propFullName + "` was not specified in " + ("`" + componentName + "`."));
+      }
+    } else {
+      return validate.apply(undefined, [props, propName, componentName, location, propFullName].concat(rest));
+    }
+  }
+
+  var chainedCheckType = checkType.bind(null, false);
+  chainedCheckType.isRequired = checkType.bind(null, true);
+
+  return chainedCheckType;
+}
+
+function createImmutableTypeChecker(immutableClassName, immutableClassTypeValidator) {
+  function validate(props, propName, componentName, location, propFullName) {
+    var propValue = props[propName];
+    if (!immutableClassTypeValidator(propValue)) {
+      var propType = getPropType(propValue);
+      return new Error("Invalid " + location + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected `" + immutableClassName + "`."));
+    }
+    return null;
+  }
+  return createChainableTypeChecker(validate);
+}
+
+function createIterableTypeChecker(typeChecker, immutableClassName, immutableClassTypeValidator) {
+
+  function validate(props, propName, componentName, location, propFullName) {
+    for (var _len = arguments.length, rest = Array(_len > 5 ? _len - 5 : 0), _key = 5; _key < _len; _key++) {
+      rest[_key - 5] = arguments[_key];
+    }
+
+    var propValue = props[propName];
+    if (!immutableClassTypeValidator(propValue)) {
+      var locationName = location;
+      var propType = getPropType(propValue);
+      return new Error("Invalid " + locationName + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an Immutable.js " + immutableClassName + "."));
+    }
+
+    if (typeof typeChecker !== "function") {
+      return new Error("Invalid typeChecker supplied to `" + componentName + "` " + ("for propType `" + propFullName + "`, expected a function."));
+    }
+
+    var propValues = propValue.toArray();
+    for (var i = 0, len = propValues.length; i < len; i++) {
+      var error = typeChecker.apply(undefined, [propValues, i, componentName, location, "" + propFullName + "[" + i + "]"].concat(rest));
+      if (error instanceof Error) {
+        return error;
+      }
+    }
+  }
+  return createChainableTypeChecker(validate);
+}
+
+function createKeysTypeChecker(typeChecker) {
+
+  function validate(props, propName, componentName, location, propFullName) {
+    for (var _len = arguments.length, rest = Array(_len > 5 ? _len - 5 : 0), _key = 5; _key < _len; _key++) {
+      rest[_key - 5] = arguments[_key];
+    }
+
+    var propValue = props[propName];
+    if (typeof typeChecker !== "function") {
+      return new Error("Invalid keysTypeChecker (optional second argument) supplied to `" + componentName + "` " + ("for propType `" + propFullName + "`, expected a function."));
+    }
+
+    var keys = propValue.keySeq().toArray();
+    for (var i = 0, len = keys.length; i < len; i++) {
+      var error = typeChecker.apply(undefined, [keys, i, componentName, location, "" + propFullName + " -> key(" + keys[i] + ")"].concat(rest));
+      if (error instanceof Error) {
+        return error;
+      }
+    }
+  }
+  return createChainableTypeChecker(validate);
+}
+
+function createListOfTypeChecker(typeChecker) {
+  return createIterableTypeChecker(typeChecker, "List", immutable__default.List.isList);
+}
+
+function createMapOfTypeCheckerFactory(valuesTypeChecker, keysTypeChecker, immutableClassName, immutableClassTypeValidator) {
+  function validate() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return createIterableTypeChecker(valuesTypeChecker, immutableClassName, immutableClassTypeValidator).apply(undefined, args) || keysTypeChecker && createKeysTypeChecker(keysTypeChecker).apply(undefined, args);
+  }
+
+  return createChainableTypeChecker(validate);
+}
+
+function createMapOfTypeChecker(valuesTypeChecker, keysTypeChecker) {
+  return createMapOfTypeCheckerFactory(valuesTypeChecker, keysTypeChecker, "Map", immutable__default.Map.isMap);
+}
+
+function createOrderedMapOfTypeChecker(valuesTypeChecker, keysTypeChecker) {
+  return createMapOfTypeCheckerFactory(valuesTypeChecker, keysTypeChecker, "OrderedMap", immutable__default.OrderedMap.isOrderedMap);
+}
+
+function createSetOfTypeChecker(typeChecker) {
+  return createIterableTypeChecker(typeChecker, "Set", immutable__default.Set.isSet);
+}
+
+function createOrderedSetOfTypeChecker(typeChecker) {
+  return createIterableTypeChecker(typeChecker, "OrderedSet", immutable__default.OrderedSet.isOrderedSet);
+}
+
+function createStackOfTypeChecker(typeChecker) {
+  return createIterableTypeChecker(typeChecker, "Stack", immutable__default.Stack.isStack);
+}
+
+function createIterableOfTypeChecker(typeChecker) {
+  return createIterableTypeChecker(typeChecker, "Iterable", immutable__default.Iterable.isIterable);
+}
+
+function createRecordOfTypeChecker(recordKeys) {
+  function validate(props, propName, componentName, location, propFullName) {
+    for (var _len = arguments.length, rest = Array(_len > 5 ? _len - 5 : 0), _key = 5; _key < _len; _key++) {
+      rest[_key - 5] = arguments[_key];
+    }
+
+    var propValue = props[propName];
+    if (!(propValue instanceof immutable__default.Record)) {
+      var propType = getPropType(propValue);
+      var locationName = location;
+      return new Error("Invalid " + locationName + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected an Immutable.js Record."));
+    }
+    for (var key in recordKeys) {
+      var checker = recordKeys[key];
+      if (!checker) {
+        continue;
+      }
+      var mutablePropValue = propValue.toObject();
+      var error = checker.apply(undefined, [mutablePropValue, key, componentName, location, "" + propFullName + "." + key].concat(rest));
+      if (error) {
+        return error;
+      }
+    }
+  }
+  return createChainableTypeChecker(validate);
+}
+
+// there is some irony in the fact that shapeTypes is a standard hash and not an immutable collection
+function createShapeTypeChecker(shapeTypes) {
+  var immutableClassName = arguments[1] === undefined ? "Iterable" : arguments[1];
+  var immutableClassTypeValidator = arguments[2] === undefined ? immutable__default.Iterable.isIterable : arguments[2];
+
+  function validate(props, propName, componentName, location, propFullName) {
+    for (var _len = arguments.length, rest = Array(_len > 5 ? _len - 5 : 0), _key = 5; _key < _len; _key++) {
+      rest[_key - 5] = arguments[_key];
+    }
+
+    var propValue = props[propName];
+    if (!immutableClassTypeValidator(propValue)) {
+      var propType = getPropType(propValue);
+      var locationName = location;
+      return new Error("Invalid " + locationName + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected an Immutable.js " + immutableClassName + "."));
+    }
+    var mutablePropValue = propValue.toObject();
+    for (var key in shapeTypes) {
+      var checker = shapeTypes[key];
+      if (!checker) {
+        continue;
+      }
+      var error = checker.apply(undefined, [mutablePropValue, key, componentName, location, "" + propFullName + "." + key].concat(rest));
+      if (error) {
+        return error;
+      }
+    }
+  }
+  return createChainableTypeChecker(validate);
+}
+
+function createShapeChecker(shapeTypes) {
+  return createShapeTypeChecker(shapeTypes);
+}
+
+function createMapContainsChecker(shapeTypes) {
+  return createShapeTypeChecker(shapeTypes, "Map", immutable__default.Map.isMap);
+}
+
+var ImmutablePropTypes_1 = ImmutablePropTypes;
+
 /**
  * Offset key parser regex.
  *
@@ -3638,7 +4213,7 @@ var OffsetKey = {
  * @type {Function}
  */
 
-var debug$2 = browser$2('slate:leaves');
+var debug$2 = browser$1('slate:leaves');
 
 /**
  * Leaf.
@@ -3821,15 +4396,15 @@ var Leaf = function (_React$Component) {
  */
 
 Leaf.propTypes = {
-  block: SlateTypes.block.isRequired,
-  editor: propTypes$2.object.isRequired,
-  index: propTypes$2.number.isRequired,
-  leaves: SlateTypes.leaves.isRequired,
-  marks: SlateTypes.marks.isRequired,
-  node: SlateTypes.node.isRequired,
-  offset: propTypes$2.number.isRequired,
-  parent: SlateTypes.node.isRequired,
-  text: propTypes$2.string.isRequired };
+  block: Types$1.block.isRequired,
+  editor: propTypes.object.isRequired,
+  index: propTypes.number.isRequired,
+  leaves: Types$1.leaves.isRequired,
+  marks: Types$1.marks.isRequired,
+  node: Types$1.node.isRequired,
+  offset: propTypes.number.isRequired,
+  parent: Types$1.node.isRequired,
+  text: propTypes.string.isRequired };
 
 var _initialiseProps = function _initialiseProps() {
   var _this2 = this;
@@ -3849,7 +4424,7 @@ var _initialiseProps = function _initialiseProps() {
  * @type {Function}
  */
 
-var debug$3 = browser$2('slate:node');
+var debug$3 = browser$1('slate:node');
 
 /**
  * Text.
@@ -3944,6 +4519,7 @@ var Text = function (_React$Component) {
         return child;
       });
 
+      // Converts List to Array to support IE 11.
       return React.createElement(
         'span',
         { 'data-key': key, style: style },
@@ -3972,12 +4548,12 @@ var Text = function (_React$Component) {
  */
 
 Text.propTypes = {
-  block: SlateTypes.block,
-  decorations: ImmutableTypes.list.isRequired,
-  editor: propTypes$2.object.isRequired,
-  node: SlateTypes.node.isRequired,
-  parent: SlateTypes.node.isRequired,
-  style: propTypes$2.object };
+  block: Types$1.block,
+  decorations: ImmutablePropTypes_1.list.isRequired,
+  editor: propTypes.object.isRequired,
+  node: Types$1.node.isRequired,
+  parent: Types$1.node.isRequired,
+  style: propTypes.object };
 Text.defaultProps = {
   style: null };
 
@@ -4053,7 +4629,7 @@ var _initialiseProps$1 = function _initialiseProps() {
  * @type {Function}
  */
 
-var debug$4 = browser$2('slate:void');
+var debug$4 = browser$1('slate:void');
 
 /**
  * Void.
@@ -4166,12 +4742,12 @@ var Void = function (_React$Component) {
  */
 
 Void.propTypes = {
-  block: SlateTypes.block,
-  children: propTypes$2.any.isRequired,
-  editor: propTypes$2.object.isRequired,
-  node: SlateTypes.node.isRequired,
-  parent: SlateTypes.node.isRequired,
-  readOnly: propTypes$2.bool.isRequired };
+  block: Types$1.block,
+  children: propTypes.any.isRequired,
+  editor: propTypes.object.isRequired,
+  node: Types$1.node.isRequired,
+  parent: Types$1.node.isRequired,
+  readOnly: propTypes.bool.isRequired };
 
 var _initialiseProps$2 = function _initialiseProps() {
   var _this2 = this;
@@ -4218,7 +4794,7 @@ var _initialiseProps$2 = function _initialiseProps() {
  * @type {Function}
  */
 
-var debug$5 = browser$2('slate:node');
+var debug$5 = browser$1('slate:node');
 
 /**
  * Node.
@@ -4354,13 +4930,13 @@ var Node = function (_React$Component) {
  */
 
 Node.propTypes = {
-  block: SlateTypes.block,
-  decorations: ImmutableTypes.list.isRequired,
-  editor: propTypes$2.object.isRequired,
-  isSelected: propTypes$2.bool.isRequired,
-  node: SlateTypes.node.isRequired,
-  parent: SlateTypes.node.isRequired,
-  readOnly: propTypes$2.bool.isRequired };
+  block: Types$1.block,
+  decorations: ImmutablePropTypes_1.list.isRequired,
+  editor: propTypes.object.isRequired,
+  isSelected: propTypes.bool.isRequired,
+  node: Types$1.node.isRequired,
+  parent: Types$1.node.isRequired,
+  readOnly: propTypes.bool.isRequired };
 
 var _initialiseProps$3 = function _initialiseProps() {
   var _this3 = this;
@@ -4394,7 +4970,7 @@ var _initialiseProps$3 = function _initialiseProps() {
       }
 
       if (shouldUpdate === false) {
-        logger.warn("Returning false in `shouldNodeComponentUpdate` does not disable Slate's internal `shouldComponentUpdate` logic. If you want to prevent updates, use React's `shouldComponentUpdate` instead.");
+        index.warn("Returning false in `shouldNodeComponentUpdate` does not disable Slate's internal `shouldComponentUpdate` logic. If you want to prevent updates, use React's `shouldComponentUpdate` instead.");
       }
     }
 
@@ -4522,7 +5098,7 @@ function findDOMRange(range) {
       anchorOffset = range.anchorOffset,
       focusKey = range.focusKey,
       focusOffset = range.focusOffset,
-      isBackward$$1 = range.isBackward,
+      isBackward = range.isBackward,
       isCollapsed = range.isCollapsed;
 
   var anchor = findDOMPoint(anchorKey, anchorOffset, win);
@@ -4530,12 +5106,25 @@ function findDOMRange(range) {
   if (!anchor || !focus) return null;
 
   var r = win.document.createRange();
-  var start = isBackward$$1 ? focus : anchor;
-  var end = isBackward$$1 ? anchor : focus;
+  var start = isBackward ? focus : anchor;
+  var end = isBackward ? anchor : focus;
   r.setStart(start.node, start.offset);
   r.setEnd(end.node, end.offset);
   return r;
 }
+
+function isBackward(selection) {
+    var startNode = selection.anchorNode;
+    var startOffset = selection.anchorOffset;
+    var endNode = selection.focusNode;
+    var endOffset = selection.focusOffset;
+
+    var position = startNode.compareDocumentPosition(endNode);
+
+    return !(position === 4 || (position === 0 && startOffset < endOffset));
+}
+
+var selectionIsBackward = isBackward;
 
 /**
  * Constants.
@@ -4564,7 +5153,7 @@ function findPoint(nativeNode, nativeOffset, value) {
       nearestNode = _normalizeNodeAndOffs.node,
       nearestOffset = _normalizeNodeAndOffs.offset;
 
-  var window = getWindow(nativeNode);
+  var window = getWindow_1(nativeNode);
   var parentNode = nearestNode.parentNode;
 
   var rangeNode = parentNode.closest(RANGE_SELECTOR);
@@ -4709,7 +5298,7 @@ function findRange(native, value) {
   var el = native.anchorNode || native.startContainer;
   if (!el) return null;
 
-  var window = getWindow(el);
+  var window = getWindow_1(el);
 
   // If the `native` object is a DOM `Range` or `StaticRange` object, change it
   // into something that looks like a DOM `Selection` instead.
@@ -4753,7 +5342,7 @@ function findRange(native, value) {
     anchorOffset: anchor.offset,
     focusKey: focus.key,
     focusOffset: focus.offset,
-    isBackward: isCollapsed ? false : isBackward(native),
+    isBackward: isCollapsed ? false : selectionIsBackward(native),
     isFocused: true
   });
 
@@ -4821,10 +5410,10 @@ function scrollToSelection(selection) {
   if (IS_IOS_11) return;
   if (!selection.anchorNode) return;
 
-  var window = getWindow(selection.anchorNode);
+  var window = getWindow_1(selection.anchorNode);
   var scroller = findScrollContainer(selection.anchorNode, window);
   var isWindow = scroller == window.document.body || scroller == window.document.documentElement;
-  var backward = isBackward(selection);
+  var backward = selectionIsBackward(selection);
 
   var range = selection.getRangeAt(0).cloneRange();
   range.collapse(backward);
@@ -4943,7 +5532,7 @@ function scrollToSelection(selection) {
  * @type {Function}
  */
 
-var debug$6 = browser$2('slate:content');
+var debug$6 = browser$1('slate:content');
 
 /**
  * Content.
@@ -4972,7 +5561,7 @@ var Content = function (_React$Component) {
     var _this = possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
     _this.componentDidMount = function () {
-      var window = getWindow(_this.element);
+      var window = getWindow_1(_this.element);
 
       window.document.addEventListener('selectionchange', _this.onNativeSelectionChange);
 
@@ -4992,9 +5581,9 @@ var Content = function (_React$Component) {
       var editor = _this.props.editor;
       var value = editor.value;
       var selection = value.selection;
-      var isBackward$$1 = selection.isBackward;
+      var isBackward = selection.isBackward;
 
-      var window = getWindow(_this.element);
+      var window = getWindow_1(_this.element);
       var native = window.getSelection();
       var rangeCount = native.rangeCount,
           anchorNode = native.anchorNode;
@@ -5021,7 +5610,7 @@ var Content = function (_React$Component) {
       var range = findDOMRange(selection, window);
 
       if (!range) {
-        logger.error('Unable to find a native DOM range from the current selection.', { selection: selection });
+        index.error('Unable to find a native DOM range from the current selection.', { selection: selection });
         return;
       }
 
@@ -5049,7 +5638,7 @@ var Content = function (_React$Component) {
       if (native.setBaseAndExtent) {
         // COMPAT: Since the DOM range has no concept of backwards/forwards
         // we need to check and do the right thing here.
-        if (isBackward$$1) {
+        if (isBackward) {
           native.setBaseAndExtent(range.endContainer, range.endOffset, range.startContainer, range.startOffset);
         } else {
           native.setBaseAndExtent(range.startContainer, range.startOffset, range.endContainer, range.endOffset);
@@ -5163,7 +5752,7 @@ var Content = function (_React$Component) {
     _this.onNativeSelectionChange = throttle_1(function (event) {
       if (_this.props.readOnly) return;
 
-      var window = getWindow(event.target);
+      var window = getWindow_1(event.target);
       var activeElement = window.document.activeElement;
 
       if (activeElement !== _this.element) return;
@@ -5228,7 +5817,7 @@ var Content = function (_React$Component) {
      */
 
     value: function componentWillUnmount() {
-      var window = getWindow(this.element);
+      var window = getWindow_1(this.element);
 
       if (window) {
         window.document.removeEventListener('selectionchange', this.onNativeSelectionChange);
@@ -5299,7 +5888,7 @@ var Content = function (_React$Component) {
         var value = editor.value;
         var selection = value.selection;
 
-        var window = getWindow(event.target);
+        var window = getWindow_1(event.target);
         var native = window.getSelection();
         var range = findRange(native, value);
 
@@ -5454,21 +6043,21 @@ var Content = function (_React$Component) {
  */
 
 Content.propTypes = {
-  autoCorrect: propTypes$2.bool.isRequired,
-  children: propTypes$2.any.isRequired,
-  className: propTypes$2.string,
-  editor: propTypes$2.object.isRequired,
-  readOnly: propTypes$2.bool.isRequired,
-  role: propTypes$2.string,
-  spellCheck: propTypes$2.bool.isRequired,
-  style: propTypes$2.object,
-  tabIndex: propTypes$2.number,
-  tagName: propTypes$2.string };
+  autoCorrect: propTypes.bool.isRequired,
+  children: propTypes.any.isRequired,
+  className: propTypes.string,
+  editor: propTypes.object.isRequired,
+  readOnly: propTypes.bool.isRequired,
+  role: propTypes.string,
+  spellCheck: propTypes.bool.isRequired,
+  style: propTypes.object,
+  tabIndex: propTypes.number,
+  tagName: propTypes.string };
 Content.defaultProps = {
   style: {},
   tagName: 'div' };
 EVENT_HANDLERS.forEach(function (handler) {
-  Content.propTypes[handler] = propTypes$2.func.isRequired;
+  Content.propTypes[handler] = propTypes.func.isRequired;
 });
 
 /**
@@ -5482,7 +6071,7 @@ EVENT_HANDLERS.forEach(function (handler) {
 function cloneFragment(event, value) {
   var fragment = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : value.fragment;
 
-  var window = getWindow(event.target);
+  var window = getWindow_1(event.target);
   var native = window.getSelection();
   var startKey = value.startKey,
       endKey = value.endKey,
@@ -5499,7 +6088,7 @@ function cloneFragment(event, value) {
 
   // Create a fake selection so that we can add a Base64-encoded copy of the
   // fragment to the HTML, to decode on future pastes.
-  var encoded = Base64.serializeNode(fragment);
+  var encoded = index$1.serializeNode(fragment);
   var range = native.getRangeAt(0);
   var contents = range.cloneContents();
   var attach = contents.childNodes[0];
@@ -5657,7 +6246,7 @@ function getEventRange(event, value) {
   }
 
   // Else resolve a range from the caret position where the drop occured.
-  var window = getWindow(target);
+  var window = getWindow_1(target);
   var native = void 0;
 
   // COMPAT: In Firefox, `caretRangeFromPoint` doesn't exist. (2016/07/25)
@@ -5762,8 +6351,8 @@ function getEventTransfer(event) {
   }
 
   // Decode a fragment or node if they exist.
-  if (fragment) fragment = Base64.deserializeNode(fragment);
-  if (node) node = Base64.deserializeNode(node);
+  if (fragment) fragment = index$1.deserializeNode(fragment);
+  if (node) node = index$1.deserializeNode(node);
 
   // COMPAT: Edge sometimes throws 'NotSupportedError'
   // when accessing `transfer.items` (2017/7/12)
@@ -5923,7 +6512,7 @@ function setEventTransfer(event, type, content) {
  * @type {Function}
  */
 
-var debug$7 = browser$2('slate:after');
+var debug$7 = browser$1('slate:after');
 
 /**
  * The after plugin.
@@ -6017,7 +6606,7 @@ function AfterPlugin() {
     debug$7('onCut', { event: event });
 
     cloneFragment(event, change.value);
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
 
     // Once the fake cut content has successfully been added to the clipboard,
     // delete the content in the current selection.
@@ -6096,12 +6685,12 @@ function AfterPlugin() {
     var isVoid = node && (node.isVoid || document.hasVoidParent(node.key));
 
     if (isVoid) {
-      var encoded = Base64.serializeNode(node, { preserveKeys: true });
+      var encoded = index$1.serializeNode(node, { preserveKeys: true });
       setEventTransfer(event, 'node', encoded);
     } else {
       var fragment = value.fragment;
 
-      var _encoded = Base64.serializeNode(fragment);
+      var _encoded = index$1.serializeNode(fragment);
       setEventTransfer(event, 'fragment', _encoded);
     }
   }
@@ -6121,7 +6710,7 @@ function AfterPlugin() {
     var document = value.document,
         selection = value.selection;
 
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     var target = getEventRange(event, value);
     if (!target) return;
 
@@ -6209,7 +6798,7 @@ function AfterPlugin() {
   function onInput(event, change, editor) {
     debug$7('onInput', { event: event });
 
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     var value = change.value;
 
     // Get the selection point.
@@ -6430,7 +7019,7 @@ function AfterPlugin() {
 
       var defaultBlock = startBlock;
       var defaultMarks = document.getInsertMarksAtRange(selection);
-      var frag = Plain.deserialize(text, { defaultBlock: defaultBlock, defaultMarks: defaultMarks }).document;
+      var frag = index$2.deserialize(text, { defaultBlock: defaultBlock, defaultMarks: defaultMarks }).document;
       change.insertFragment(frag);
     }
   }
@@ -6446,7 +7035,7 @@ function AfterPlugin() {
   function onSelect(event, change, editor) {
     debug$7('onSelect', { event: event });
 
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     var value = change.value;
     var document = value.document;
 
@@ -6621,7 +7210,7 @@ function AfterPlugin() {
  * @type {Function}
  */
 
-var debug$8 = browser$2('slate:before');
+var debug$8 = browser$1('slate:before');
 
 /**
  * The core before plugin.
@@ -6676,7 +7265,7 @@ function BeforePlugin() {
     var relatedTarget = event.relatedTarget,
         target = event.target;
 
-    var window = getWindow(target);
+    var window = getWindow_1(target);
 
     // COMPAT: If the current `activeElement` is still the previous one, this is
     // due to the window being blurred when the tab itself becomes unfocused, so
@@ -6785,7 +7374,7 @@ function BeforePlugin() {
    */
 
   function onCopy(event, change, editor) {
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     isCopying = true;
     window.requestAnimationFrame(function () {
       return isCopying = false;
@@ -6805,7 +7394,7 @@ function BeforePlugin() {
   function onCut(event, change, editor) {
     if (editor.props.readOnly) return true;
 
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     isCopying = true;
     window.requestAnimationFrame(function () {
       return isCopying = false;
@@ -6936,7 +7525,7 @@ function BeforePlugin() {
     var el = reactDom.findDOMNode(editor);
 
     // Save the new `activeElement`.
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     activeElement = window.document.activeElement;
 
     // COMPAT: If the editor has nested editable elements, the focus can go to
@@ -7024,7 +7613,7 @@ function BeforePlugin() {
     if (editor.props.readOnly) return true;
 
     // Save the new `activeElement`.
-    var window = getWindow(event.target);
+    var window = getWindow_1(event.target);
     activeElement = window.document.activeElement;
 
     debug$8('onSelect', { event: event });
@@ -7065,7 +7654,7 @@ function BeforePlugin() {
  * @return {Void}
  */
 
-function noop$1() {}
+function noop$2() {}
 
 /**
  * Debug.
@@ -7073,7 +7662,7 @@ function noop$1() {}
  * @type {Function}
  */
 
-var debug$9 = browser$2('slate:editor');
+var debug$9 = browser$1('slate:editor');
 
 /**
  * Editor.
@@ -7269,23 +7858,23 @@ var Editor = function (_React$Component) {
  */
 
 Editor.propTypes = {
-  autoCorrect: propTypes$2.bool,
-  autoFocus: propTypes$2.bool,
-  className: propTypes$2.string,
-  onChange: propTypes$2.func,
-  placeholder: propTypes$2.any,
-  plugins: propTypes$2.array,
-  readOnly: propTypes$2.bool,
-  role: propTypes$2.string,
-  schema: propTypes$2.object,
-  spellCheck: propTypes$2.bool,
-  style: propTypes$2.object,
-  tabIndex: propTypes$2.number,
-  value: SlateTypes.value.isRequired };
+  autoCorrect: propTypes.bool,
+  autoFocus: propTypes.bool,
+  className: propTypes.string,
+  onChange: propTypes.func,
+  placeholder: propTypes.any,
+  plugins: propTypes.array,
+  readOnly: propTypes.bool,
+  role: propTypes.string,
+  schema: propTypes.object,
+  spellCheck: propTypes.bool,
+  style: propTypes.object,
+  tabIndex: propTypes.number,
+  value: Types$1.value.isRequired };
 Editor.defaultProps = {
   autoFocus: false,
   autoCorrect: true,
-  onChange: noop$1,
+  onChange: noop$2,
   plugins: [],
   readOnly: false,
   schema: {},
@@ -7316,7 +7905,7 @@ var _initialiseProps$4 = function _initialiseProps() {
       // If we've resolved a few times already, and it's exactly in line with
       // the updates, then warn the user that they may be doing something wrong.
       if (_this2.tmp.resolves > 5 && _this2.tmp.resolves == _this2.tmp.updates) {
-        logger.warn('A Slate <Editor> is re-resolving `props.plugins` or `props.schema` on each update, which leads to poor performance. This is often due to passing in a new `schema` or `plugins` prop with each render by declaring them inline in your render function. Do not do this!');
+        index.warn('A Slate <Editor> is re-resolving `props.plugins` or `props.schema` on each update, which leads to poor performance. This is often due to passing in a new `schema` or `plugins` prop with each render by declaring them inline in your render function. Do not do this!');
       }
     }
 
@@ -7456,7 +8045,7 @@ try {
   for (var _iterator$1 = EVENT_HANDLERS[Symbol.iterator](), _step$1; !(_iteratorNormalCompletion$1 = (_step$1 = _iterator$1.next()).done); _iteratorNormalCompletion$1 = true) {
     var prop = _step$1.value;
 
-    Editor.propTypes[prop] = propTypes$2.func;
+    Editor.propTypes[prop] = propTypes.func;
   }
 
   /**
@@ -7479,7 +8068,7 @@ try {
   }
 }
 
-var index$1 = {
+var index$4 = {
   Editor: Editor,
   cloneFragment: cloneFragment,
   findDOMNode: findDOMNode,
@@ -7504,7 +8093,7 @@ exports.getEventTransfer = getEventTransfer;
 exports.setEventTransfer = setEventTransfer;
 exports.AfterPlugin = AfterPlugin;
 exports.BeforePlugin = BeforePlugin;
-exports.default = index$1;
+exports.default = index$4;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
