@@ -1,3 +1,8 @@
+Forked package from https://github.com/ianstormtaylor/slate/tree/master/packages/slate-html-serializer
+
+Contains fixes for IE 11:
+https://github.com/ianstormtaylor/slate/pull/1756
+
 This package contains the React-specific logic for Slate. It's separated further into a series of directories:
 
 * [**Components**](./src/components) — containing the React components for rendering Slate editors.
